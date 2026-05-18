@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Gestione Registrazioni – Admin 1522{% endblock %}
+
+{% block content %}
+<main>
+    <div style="padding-top:20px; margin-bottom:28px;">
+        <h1 style="font-family:var(--font-heading); font-size:2rem;">Gestione Registrazioni Operatori</h1>
+        <p style="color:var(--grigio);">Area riservata Admin – approva o rifiuta le richieste di registrazione.</p>
+    </div>
+
+    <!-- In attesa -->
+    <div class="card">
+        <h2 class="card-title" style="display:flex; align-items:center; gap:10px;">
+            Richieste in Attesa
+            <span style="background:var(--rosso); color:white; font-size:12px; padding:2px 10px; border-radius:50px;">
+                {{ in_attesa.count }}
+            </span>
+        </h2>
+        {% if in_attesa %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nominativo</th>
+                        <th>Email</th>
+                        <th>Telefono</th>
+                        <th>Specializzazione</th>
+                        <th>Disponibilità</th>
+                        <th>CV</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for op in in_attesa %}
+                    <tr>
+                        <td><strong>{{ op.get_full_name|default:"—" }}</strong></td>
+                        <td>{{ op.email|default:"—" }}</td>
+                        <td>{{ op.telefono|default:"—" }}</td>
+                        <td>{{ op.get_specializzazione_display }}</td>
+                        <td>{{ op.get_disponibilita_display }}</td>
+                        <td>
+                            {% if op.curriculum_vitae %}
+                                <a href="{{ op.curriculum_vitae.url }}" target="_blank" style="color:var(--rosso); font-size:13px;">📎 CV</a>
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'operatori:approva' op.pk %}" class="btn btn-primary btn-sm">Gestisci</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p style="color:var(--grigio); text-align:center; padding:20px;">Nessuna richiesta in attesa.</p>
+        {% endif %}
+    </div>
+
+    <!-- Approvati -->
+    <div class="card">
+        <h2 class="card-title">Operatori Approvati ({{ approvati.count }})</h2>
+        {% if approvati %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Nominativo</th><th>Username</th><th>Email</th><th>Specializzazione</th></tr>
+                </thead>
+                <tbody>
+                    {% for op in approvati %}
+                    <tr>
+                        <td>{{ op.get_full_name|default:"—" }}</td>
+                        <td><code>{{ op.username }}</code></td>
+                        <td>{{ op.email|default:"—" }}</td>
+                        <td>{{ op.get_specializzazione_display }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p style="color:var(--grigio); text-align:center; padding:16px;">Nessun operatore approvato.</p>
+        {% endif %}
+    </div>
+
+    <!-- Rifiutati -->
+    {% if rifiutati %}
+    <div class="card">
+        <h2 class="card-title">Registrazioni Rifiutate ({{ rifiutati.count }})</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>Nominativo</th><th>Email</th><th>Azioni</th></tr>
+                </thead>
+                <tbody>
+                    {% for op in rifiutati %}
+                    <tr>
+                        <td>{{ op.get_full_name|default:"—" }}</td>
+                        <td>{{ op.email|default:"—" }}</td>
+                        <td><a href="{% url 'operatori:approva' op.pk %}" class="btn btn-secondary btn-sm">Rivaluta</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

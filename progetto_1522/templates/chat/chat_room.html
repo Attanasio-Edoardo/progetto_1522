@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% block title %}Chat – Ticket #{{ ticket.pk }} – 1522{% endblock %}
+
+{% block extra_head %}
+<style>
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 200px);
+    min-height: 500px;
+    max-width: 760px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+.chat-header {
+    background: var(--rosso);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background: #F7F7F7;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.msg {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+}
+.msg-vittima {
+    background: white;
+    border: 1px solid #E0E0E0;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+.msg-operatore {
+    background: var(--rosso);
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+}
+.msg-meta {
+    font-size: 11px;
+    margin-top: 4px;
+    opacity: 0.7;
+}
+.msg-vittima .msg-meta { color: var(--grigio); }
+.msg-operatore .msg-meta { color: rgba(255,255,255,0.8); }
+.chat-input-area {
+    background: white;
+    border: 1px solid #E0E0E0;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 16px;
+    display: flex;
+    gap: 10px;
+}
+.chat-input-area input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color 0.2s;
+}
+.chat-input-area input:focus { border-color: var(--rosso); }
+.chat-stato {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 50px;
+}
+.connesso { background: rgba(255,255,255,0.2); }
+.disconnesso { background: rgba(255,255,255,0.1); }
+</style>
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="chat-container">
+
+        <!-- Header chat -->
+        <div class="chat-header">
+            <div>
+                <strong>Chat Richiesta #{{ ticket.pk }}</strong>
+                <div style="font-size:12px; opacity:0.85; margin-top:2px;">
+                    {{ ticket.get_tipo_violenza_display }} ·
+                    <span class="urgenza-badge urgenza-{{ ticket.livello_urgenza }}" style="font-size:11px;">
+                        Urgenza {{ ticket.livello_urgenza }}
+                    </span>
+                </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <span id="connessione-stato" class="chat-stato connesso">🟢 Connesso</span>
+                {% if is_operatore %}
+                <form method="post" action="{% url 'tickets:dettaglio' ticket.pk %}" style="margin:0;">
+                    {% csrf_token %}
+                    <input type="hidden" name="azione_form" value="cambia_stato">
+                    <input type="hidden" name="stato" value="CHIUSA">
+                    <button type="submit" class="btn btn-sm" style="background:rgba(255,255,255,0.2); color:white; border:1px solid rgba(255,255,255,0.4); font-size:12px;">
+                        Chiudi Chat
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Messaggi precedenti -->
+        <div class="chat-messages" id="chat-messages">
+            {% if not messaggi %}
+            <div style="text-align:center; color:var(--grigio); padding:20px;">
+                <div style="font-size:2rem; margin-bottom:8px;">💬</div>
+                <p style="font-size:14px;">
+                    {% if is_vittima %}
+                        Scrivi un messaggio. Un operatore risponderà il prima possibile.
+                    {% else %}
+                        Nessun messaggio ancora. Avvia la comunicazione con la vittima.
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+            {% for msg in messaggi %}
+            <div class="msg msg-{{ msg.tipo_mittente|lower }}">
+                <div>{{ msg.testo }}</div>
+                <div class="msg-meta">
+                    {{ msg.tipo_mittente|capfirst }} · {{ msg.inviato_il|time:"H:i" }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Input messaggio -->
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Scrivi un messaggio..." autocomplete="off" maxlength="1000">
+            <button onclick="inviaMessaggio()" class="btn btn-primary" id="btn-invia">
+                Invia
+            </button>
+        </div>
+    </div>
+</main>
+
+{% block extra_scripts %}
+<script>
+    const ticketId    = "{{ ticket.pk }}";
+    const tipoMittente = "{{ tipo_mittente }}";
+    const wsProtocol  = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const wsUrl       = `${wsProtocol}://${window.location.host}/ws/chat/${ticketId}/`;
+
+    let socket = null;
+    const messagesDiv = document.getElementById('chat-messages');
+    const chatInput   = document.getElementById('chat-input');
+    const statoEl     = document.getElementById('connessione-stato');
+
+    function connetti() {
+        socket = new WebSocket(wsUrl);
+
+        socket.onopen = function() {
+            statoEl.textContent = '🟢 Connesso';
+            statoEl.className = 'chat-stato connesso';
+        };
+
+        socket.onclose = function() {
+            statoEl.textContent = '🔴 Disconnesso';
+            statoEl.className = 'chat-stato disconnesso';
+            // Riconnessione automatica dopo 3 secondi
+            setTimeout(connetti, 3000);
+        };
+
+        socket.onerror = function() {
+            statoEl.textContent = '⚠️ Errore';
+        };
+
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            aggiungiMessaggio(data.message, data.tipo_mittente, data.timestamp);
+        };
+    }
+
+    function aggiungiMessaggio(testo, tipo, timestamp) {
+        const div = document.createElement('div');
+        div.className = `msg msg-${tipo.toLowerCase()}`;
+        div.innerHTML = `
+            <div>${escapeHtml(testo)}</div>
+            <div class="msg-meta">${tipo} · ${timestamp}</div>
+        `;
+        // Rimuovi il placeholder se presente
+        const placeholder = messagesDiv.querySelector('[data-placeholder]');
+        if (placeholder) placeholder.remove();
+
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function inviaMessaggio() {
+        const testo = chatInput.value.trim();
+        if (!testo || !socket || socket.readyState !== WebSocket.OPEN) return;
+
+        socket.send(JSON.stringify({
+            message: testo,
+            tipo_mittente: tipoMittente,
+        }));
+        chatInput.value = '';
+    }
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    }
+
+    // Invia con Enter
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') inviaMessaggio();
+    });
+
+    // Scroll in fondo
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    // Avvia connessione WebSocket
+    connetti();
+</script>
+{% endblock %}
+{% endblock %}

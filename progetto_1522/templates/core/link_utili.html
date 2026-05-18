@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Link Utili – 1522{% endblock %}
+
+{% block content %}
+<div style="background:var(--rosso); color:white; padding:48px 24px; text-align:center;">
+    <h1 style="font-family:var(--font-heading); font-size:2.5rem; margin-bottom:12px;">Link Utili</h1>
+    <p style="opacity:0.9; max-width:500px; margin:0 auto;">
+        Risorse, istituzioni e organizzazioni al tuo fianco
+    </p>
+</div>
+
+<main>
+    {% regroup link by categoria as link_per_categoria %}
+    {% for gruppo in link_per_categoria %}
+    <div style="margin-bottom:32px;">
+        <h2 style="font-family:var(--font-heading); font-size:1.5rem; color:var(--grigio-scuro); margin-bottom:16px; padding-bottom:10px; border-bottom:2px solid var(--rosso-chiaro);">
+            {{ gruppo.grouper }}
+        </h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px;">
+            {% for risorsa in gruppo.list %}
+            <a href="{{ risorsa.url }}" target="_blank" rel="noopener noreferrer"
+               class="card" style="text-decoration:none; color:inherit; display:block; transition:transform 0.2s, box-shadow 0.2s;"
+               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 24px rgba(0,0,0,0.12)'"
+               onmouseout="this.style.transform='none'; this.style.boxShadow=''">
+                <div style="display:flex; align-items:flex-start; gap:12px;">
+                    <div style="background:var(--rosso-chiaro); padding:10px; border-radius:8px; flex-shrink:0;">
+                        🔗
+                    </div>
+                    <div>
+                        <h3 style="font-size:15px; color:var(--rosso); margin-bottom:4px;">{{ risorsa.titolo }}</h3>
+                        <p style="font-size:13px; color:var(--grigio); line-height:1.5;">{{ risorsa.descrizione }}</p>
+                        <p style="font-size:11px; color:#AAA; margin-top:6px;">{{ risorsa.url }}</p>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</main>
+{% endblock %}

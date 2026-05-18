@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Il 1522 – Cos'è e Come Funziona{% endblock %}
+
+{% block content %}
+<div style="background:var(--rosso); color:white; padding:48px 24px; text-align:center;">
+    <h1 style="font-family:var(--font-heading); font-size:2.5rem; margin-bottom:12px;">Il 1522</h1>
+    <p style="opacity:0.9; max-width:600px; margin:0 auto; font-size:1.05rem;">
+        Il numero nazionale contro la violenza di genere e lo stalking
+    </p>
+</div>
+
+<main>
+    <div style="display:grid; grid-template-columns:2fr 1fr; gap:32px; align-items:start;">
+        <div>
+            <div class="card">
+                <h2 class="card-title">Cos'è il 1522</h2>
+                <p style="line-height:1.8; color:var(--grigio-scuro); margin-bottom:16px;">
+                    Il <strong>1522</strong> è un servizio pubblico promosso dalla Presidenza del Consiglio dei Ministri –
+                    Dipartimento per le Pari Opportunità. Il numero, <strong>gratuito</strong>, è attivo
+                    <strong>24 ore su 24</strong>, 365 giorni l'anno.
+                </p>
+                <p style="line-height:1.8; color:var(--grigio-scuro); margin-bottom:16px;">
+                    Accoglie con operatrici specializzate le richieste di aiuto e sostegno delle donne
+                    vittime di <strong>violenza di genere</strong> e <strong>stalking</strong>.
+                </p>
+                <p style="line-height:1.8; color:var(--grigio-scuro);">
+                    Il servizio è disponibile in <strong>italiano, inglese, francese, spagnolo e arabo</strong>
+                    per garantire supporto anche alle donne straniere residenti in Italia.
+                </p>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Come Funziona</h2>
+                <div style="display:flex; flex-direction:column; gap:16px;">
+                    {% for passo, titolo, testo in "1,Contatta il Servizio,Chiama il 1522 (gratuito da rete fissa e mobile) oppure invia una richiesta online attraverso questo sito.|2,Valutazione dei Bisogni,L'operatrice specializzata valuta la situazione e capisce di che tipo di supporto hai bisogno: sostegno psicologico, consulenza legale o intervento d'emergenza.|3,Orientamento ai Servizi,Vieni orientata verso i servizi più vicini a te: Centri Antiviolenza, Servizi Sociali, Consultori familiari.|4,Emergenza Immediata,Se sei in pericolo immediato, il 1522 attiva direttamente le Forze dell'Ordine (112) per un intervento rapido."|split:"|" %}
+                    {% endfor %}
+                    <div style="display:flex; gap:16px; align-items:flex-start;">
+                        <div style="background:var(--rosso); color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;">1</div>
+                        <div>
+                            <strong style="color:var(--grigio-scuro);">Contatta il Servizio</strong>
+                            <p style="font-size:14px; color:var(--grigio); margin-top:4px; line-height:1.6;">Chiama il <strong>1522</strong> (gratuito) oppure usa il modulo online su questo sito.</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:16px; align-items:flex-start;">
+                        <div style="background:var(--rosso); color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;">2</div>
+                        <div>
+                            <strong>Valutazione dei Bisogni</strong>
+                            <p style="font-size:14px; color:var(--grigio); margin-top:4px; line-height:1.6;">L'operatrice valuta la tua situazione: supporto psicologico, consulenza legale o emergenza immediata.</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:16px; align-items:flex-start;">
+                        <div style="background:var(--rosso); color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;">3</div>
+                        <div>
+                            <strong>Orientamento</strong>
+                            <p style="font-size:14px; color:var(--grigio); margin-top:4px; line-height:1.6;">Vieni orientata verso i servizi territoriali più vicini: Centri Antiviolenza, Servizi Sociali, Consultori.</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:16px; align-items:flex-start;">
+                        <div style="background:var(--rosso); color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;">4</div>
+                        <div>
+                            <strong>Emergenza</strong>
+                            <p style="font-size:14px; color:var(--grigio); margin-top:4px; line-height:1.6;">In caso di pericolo immediato, il 1522 contatta direttamente le Forze dell'Ordine.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="card" style="border-top:4px solid var(--rosso); text-align:center;">
+                <div style="font-size:3rem; font-family:var(--font-heading); color:var(--rosso); margin-bottom:8px;">1522</div>
+                <p style="font-size:13px; color:var(--grigio); margin-bottom:16px;">Gratuito · H24 · Anonimo</p>
+                <a href="tel:1522" class="btn btn-primary btn-block">📞 Chiama Ora</a>
+            </div>
+            <div class="card" style="margin-top:16px;">
+                <h3 style="font-family:var(--font-heading); color:var(--rosso); margin-bottom:12px; font-size:1.1rem;">Caratteristiche</h3>
+                <ul style="list-style:none; display:flex; flex-direction:column; gap:10px;">
+                    <li style="font-size:14px; display:flex; gap:8px;"><span>✅</span> Gratuito da rete fissa e cellulare</li>
+                    <li style="font-size:14px; display:flex; gap:8px;"><span>✅</span> Attivo 24 ore su 24, tutto l'anno</li>
+                    <li style="font-size:14px; display:flex; gap:8px;"><span>✅</span> Anonimato garantito</li>
+                    <li style="font-size:14px; display:flex; gap:8px;"><span>✅</span> Multilingue (IT, EN, FR, ES, AR)</li>
+                    <li style="font-size:14px; display:flex; gap:8px;"><span>✅</span> Dati protetti GDPR</li>
+                    <li style="font-size:14px; display:flex; gap:8px;"><span>✅</span> Operatrici specializzate</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

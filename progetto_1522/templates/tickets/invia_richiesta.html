@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Richiesta di Aiuto – 1522{% endblock %}
+
+{% block content %}
+<main style="max-width: 860px;">
+
+    <!-- Intestazione -->
+    <div style="margin-bottom:32px; padding-top:20px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+            <span style="background:var(--rosso); color:white; padding:4px 12px; border-radius:50px; font-size:12px; font-weight:700;">
+                RICHIESTA DI AIUTO
+            </span>
+            <span style="font-size:12px; color:var(--grigio);">🔒 Tutti i dati sono protetti e cifrati (GDPR)</span>
+        </div>
+        <h1 style="font-family:var(--font-heading); font-size:2.2rem; color:var(--grigio-scuro);">
+            Siamo qui per aiutarti
+        </h1>
+        <p style="color:var(--grigio); margin-top:8px; font-size:15px;">
+            Compila il modulo sottostante. <strong>Nome e cognome sono facoltativi</strong> – puoi restare anonima.
+            I tuoi dati di contatto saranno <strong>cifrati</strong> e accessibili solo agli operatori autorizzati.
+        </p>
+    </div>
+
+    <!-- Alert urgenza -->
+    <div style="background:#FFEBEE; border:2px solid var(--rosso); border-radius:10px; padding:16px 20px; margin-bottom:28px; display:flex; align-items:center; gap:12px;">
+        <span style="font-size:1.5rem;">⚠️</span>
+        <div>
+            <strong style="color:var(--rosso);">Sei in pericolo immediato?</strong>
+            <span style="color:var(--grigio-scuro); font-size:14px;">
+                Chiama subito il <a href="tel:112" style="color:var(--rosso); font-weight:700;">112</a>
+                o il <a href="tel:1522" style="color:var(--rosso); font-weight:700;">1522</a>.
+                Il modulo online è per situazioni non urgenti.
+            </span>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Sezione 1: Dati personali -->
+        <div class="card">
+            <h2 class="card-title">1. Chi sei</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_nome">
+                        Nome <span class="opzionale">(facoltativo)</span>
+                    </label>
+                    {{ form.nome }}
+                    {% if form.nome.errors %}
+                        <div style="color:var(--rosso); font-size:12px; margin-top:4px;">{{ form.nome.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="id_cognome">
+                        Cognome <span class="opzionale">(facoltativo)</span>
+                    </label>
+                    {{ form.cognome }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_contatto">Telefono o Email di contatto *</label>
+                {{ form.contatto }}
+                <p class="help-text">🔒 {{ form.contatto.help_text }}</p>
+                {% if form.contatto.errors %}
+                    <div style="color:var(--rosso); font-size:12px; margin-top:4px;">{{ form.contatto.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_fascia_eta">Fascia d'età *</label>
+                    {{ form.fascia_eta }}
+                </div>
+                <div class="form-group">
+                    <label for="id_regione">Regione di provenienza *</label>
+                    {{ form.regione }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sezione 2: Dati della richiesta -->
+        <div class="card">
+            <h2 class="card-title">2. La tua situazione</h2>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_data_invio">Data *</label>
+                    {{ form.data_invio }}
+                </div>
+                <div class="form-group">
+                    <label for="id_ora_invio">Ora *</label>
+                    {{ form.ora_invio }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="id_tipo_violenza">Tipo di violenza *</label>
+                    {{ form.tipo_violenza }}
+                </div>
+                <div class="form-group">
+                    <label for="id_livello_urgenza">Livello di urgenza *</label>
+                    {{ form.livello_urgenza }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="id_descrizione">Descrizione della situazione *</label>
+                {{ form.descrizione }}
+                <p class="help-text">{{ form.descrizione.help_text }}</p>
+            </div>
+        </div>
+
+        <!-- Sezione 3: Allegato -->
+        <div class="card">
+            <h2 class="card-title">3. Documenti <span style="font-weight:400; font-size:1rem; color:var(--grigio);">(opzionale)</span></h2>
+
+            <div class="form-group">
+                <label for="id_allegato">File che attesta i fatti</label>
+                {{ form.allegato }}
+                <p class="help-text">{{ form.allegato.help_text }}</p>
+            </div>
+        </div>
+
+        <!-- Privacy e invio -->
+        <div class="card">
+            <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:20px;">
+                <input type="checkbox" id="privacy" required style="width:auto; margin-top:3px;">
+                <label for="privacy" style="font-size:13px; color:var(--grigio); cursor:pointer;">
+                    Acconsento al trattamento dei miei dati personali secondo la
+                    <strong>normativa GDPR</strong> (Reg. UE 2016/679) per la gestione della mia richiesta.
+                    I dati sono cifrati e trattati esclusivamente da personale autorizzato.
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="font-size:16px; padding:14px;">
+                📤 Invia Richiesta di Aiuto
+            </button>
+        </div>
+
+    </form>
+</main>
+
+<style>
+/* Override stile form per questa pagina */
+.form-group input, .form-group select, .form-group textarea {
+    background: #FAFAFA;
+}
+.form-group input[type="checkbox"] {
+    width: auto !important;
+    accent-color: var(--rosso);
+}
+</style>
+{% endblock %}

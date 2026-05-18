@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Richiesta Inviata – 1522{% endblock %}
+
+{% block content %}
+<main style="max-width:700px; text-align:center; padding-top:60px;">
+    <div style="font-size:4rem; margin-bottom:16px;">✅</div>
+    <h1 style="font-family:var(--font-heading); font-size:2.2rem; color:var(--verde-ok); margin-bottom:12px;">
+        Richiesta Ricevuta
+    </h1>
+    <p style="font-size:1.1rem; color:var(--grigio); margin-bottom:8px;">
+        La tua richiesta <strong>#{{ ticket.pk }}</strong> è stata inviata con successo.
+    </p>
+    <p style="font-size:1rem; color:var(--grigio); margin-bottom:32px;">
+        Un operatore specializzato la prenderà in carico il prima possibile.
+        Puoi seguire la chat in tempo reale tramite il link qui sotto.
+    </p>
+
+    <div class="card" style="text-align:left; margin-bottom:24px;">
+        <h3 style="font-family:var(--font-heading); color:var(--rosso); margin-bottom:16px;">Riepilogo richiesta</h3>
+        <table style="width:100%; border-collapse:collapse;">
+            <tr>
+                <td style="padding:8px 0; color:var(--grigio); font-size:14px; width:40%;">Numero richiesta</td>
+                <td style="padding:8px 0; font-weight:700;">#{{ ticket.pk }}</td>
+            </tr>
+            <tr>
+                <td style="padding:8px 0; color:var(--grigio); font-size:14px;">Tipo</td>
+                <td style="padding:8px 0;">{{ ticket.get_tipo_violenza_display }}</td>
+            </tr>
+            <tr>
+                <td style="padding:8px 0; color:var(--grigio); font-size:14px;">Urgenza</td>
+                <td style="padding:8px 0;">
+                    <span class="urgenza-badge urgenza-{{ ticket.livello_urgenza }}">
+                        {{ ticket.get_livello_urgenza_display }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:8px 0; color:var(--grigio); font-size:14px;">Stato</td>
+                <td style="padding:8px 0;">
+                    <span class="stato-badge stato-{{ ticket.stato }}">
+                        {{ ticket.get_stato_display }}
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a href="{% url 'chat:room' ticket.pk %}" class="btn btn-primary">
+            💬 Apri Chat con Operatore
+        </a>
+        <a href="{% url 'core:home' %}" class="btn btn-secondary">
+            Torna alla Home
+        </a>
+    </div>
+
+    <div style="margin-top:32px; background:var(--rosso-chiaro); border-radius:10px; padding:16px; font-size:13px; color:var(--grigio-scuro);">
+        <strong>Nota sulla privacy:</strong> Conserva il numero della tua richiesta (#{{ ticket.pk }}).
+        Non condividere questo numero con nessuno che non si sia presentato come operatore 1522.
+        Per sicurezza, puoi uscire rapidamente da questo sito usando il tasto "Esci Subito" in basso a destra.
+    </div>
+</main>
+{% endblock %}

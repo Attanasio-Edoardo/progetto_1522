@@ -1,0 +1,69 @@
+erDiagram
+    OPERATORE {
+        bigint id PK
+        varchar username
+        varchar first_name
+        varchar last_name
+        varchar email
+        varchar telefono
+        varchar password_hash
+        varchar specializzazione
+        text titolo_studio
+        file curriculum_vitae
+        varchar disponibilita
+        varchar stato_registrazione
+        bool is_active
+        bool is_superuser
+        datetime date_joined
+    }
+
+    VITTIMA {
+        bigint id PK
+        varchar nome
+        varchar cognome
+        text contatto_cifrato
+        varchar fascia_eta
+        varchar regione
+        datetime creato_il
+    }
+
+    TICKET {
+        bigint id PK
+        bigint vittima_id FK
+        bigint operatore_assegnato_id FK
+        date data_invio
+        time ora_invio
+        varchar tipo_violenza
+        text descrizione
+        int livello_urgenza
+        file allegato
+        varchar stato
+        datetime creato_il
+        datetime aggiornato_il
+    }
+
+    LOG_AZIONE {
+        bigint id PK
+        bigint ticket_id FK
+        bigint operatore_id FK
+        varchar azione
+        varchar esito
+        text note_riservate
+        datetime eseguita_il
+    }
+
+    MESSAGGIO {
+        bigint id PK
+        bigint ticket_id FK
+        bigint operatore_id FK
+        varchar tipo_mittente
+        text testo
+        datetime inviato_il
+    }
+
+    OPERATORE ||--o{ TICKET : "gestisce"
+    VITTIMA ||--o{ TICKET : "invia"
+    TICKET ||--o{ LOG_AZIONE : "ha"
+    OPERATORE ||--o{ LOG_AZIONE : "esegue"
+    TICKET ||--o{ MESSAGGIO : "contiene"
+    OPERATORE ||--o{ MESSAGGIO : "invia"

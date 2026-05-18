@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}1522 – Numero Anti Violenza e Stalking{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="hero">
+    <div class="hero-numero">1522</div>
+    <h1>Sei al sicuro. Siamo qui per te.</h1>
+    <p>
+        Il 1522 è il numero nazionale contro la violenza di genere e lo stalking.
+        Gratuito, anonimo, disponibile 24 ore su 24, 365 giorni l'anno.
+    </p>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:16px;">
+        <a href="{% url 'tickets:invia' %}" class="btn btn-primary" style="background:white; color:var(--rosso); font-size:16px;">
+            📝 Invia una Richiesta di Aiuto
+        </a>
+    </div>
+    <div class="hero-badges">
+        <span class="hero-badge">✓ Gratuito</span>
+        <span class="hero-badge">✓ Anonimo</span>
+        <span class="hero-badge">✓ H24 / 365gg</span>
+        <span class="hero-badge">✓ Multilingue</span>
+        <span class="hero-badge">✓ Dati protetti GDPR</span>
+    </div>
+</div>
+
+<!-- Sezione come funziona -->
+<main>
+    <section style="margin-bottom:60px;">
+        <h2 style="font-family:var(--font-heading); font-size:2rem; text-align:center; margin-bottom:40px; color:var(--grigio-scuro);">
+            Come funziona il 1522
+        </h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:24px;">
+            <div class="card" style="text-align:center; border-top:4px solid var(--rosso);">
+                <div style="font-size:2.5rem; margin-bottom:12px;">📞</div>
+                <h3 style="font-family:var(--font-heading); color:var(--rosso); margin-bottom:8px;">Chiama o scrivi</h3>
+                <p style="color:var(--grigio); font-size:14px;">
+                    Chiama il <strong>1522</strong> o invia una richiesta online.
+                    Operatrici specializzate ti risponderanno in italiano, inglese, francese, spagnolo e arabo.
+                </p>
+            </div>
+            <div class="card" style="text-align:center; border-top:4px solid var(--rosso);">
+                <div style="font-size:2.5rem; margin-bottom:12px;">🛡️</div>
+                <h3 style="font-family:var(--font-heading); color:var(--rosso); margin-bottom:8px;">Valutazione</h3>
+                <p style="color:var(--grigio); font-size:14px;">
+                    L'operatore valuta la situazione: supporto psicologico, consulenza legale
+                    o intervento d'emergenza immediato con le Forze dell'Ordine.
+                </p>
+            </div>
+            <div class="card" style="text-align:center; border-top:4px solid var(--rosso);">
+                <div style="font-size:2.5rem; margin-bottom:12px;">🗺️</div>
+                <h3 style="font-family:var(--font-heading); color:var(--rosso); margin-bottom:8px;">Orientamento</h3>
+                <p style="color:var(--grigio); font-size:14px;">
+                    Vieni indirizzata verso i servizi più vicini:
+                    Centri Antiviolenza, Servizi Sociali, Consultori.
+                </p>
+            </div>
+            <div class="card" style="text-align:center; border-top:4px solid var(--rosso);">
+                <div style="font-size:2.5rem; margin-bottom:12px;">🔒</div>
+                <h3 style="font-family:var(--font-heading); color:var(--rosso); margin-bottom:8px;">Privacy totale</h3>
+                <p style="color:var(--grigio); font-size:14px;">
+                    Non sei obbligata a dare il tuo nome.
+                    Tutti i dati sono cifrati e protetti secondo il GDPR.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA urgenza -->
+    <section style="background:var(--rosso); color:white; border-radius:16px; padding:48px 40px; text-align:center; margin-bottom:60px;">
+        <h2 style="font-family:var(--font-heading); font-size:2rem; margin-bottom:12px;">
+            Sei in pericolo adesso?
+        </h2>
+        <p style="opacity:0.9; margin-bottom:24px; font-size:1.1rem;">
+            Se sei in pericolo immediato, chiama il <strong>112</strong> o usa il nostro sistema di richiesta urgente.
+        </p>
+        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+            <a href="tel:112" class="btn" style="background:white; color:var(--rosso); font-size:16px;">📞 Chiama il 112</a>
+            <a href="{% url 'tickets:invia' %}" class="btn" style="background:rgba(255,255,255,0.2); color:white; border:2px solid rgba(255,255,255,0.5);">
+                Invia Richiesta Urgente
+            </a>
+        </div>
+    </section>
+
+    <!-- Link rapidi -->
+    <section style="margin-bottom:60px;">
+        <h2 style="font-family:var(--font-heading); font-size:1.8rem; text-align:center; margin-bottom:32px;">
+            Risorse e Informazioni
+        </h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px;">
+            <a href="{% url 'core:il_1522' %}" class="card" style="text-decoration:none; color:inherit; transition:transform 0.2s; display:block;">
+                <div style="font-size:2rem; margin-bottom:8px;">ℹ️</div>
+                <h3 style="color:var(--rosso); margin-bottom:4px;">Il 1522</h3>
+                <p style="font-size:13px; color:var(--grigio);">Scopri tutto sul servizio nazionale</p>
+            </a>
+            <a href="{% url 'core:mappatura' %}" class="card" style="text-decoration:none; color:inherit; transition:transform 0.2s; display:block;">
+                <div style="font-size:2rem; margin-bottom:8px;">📍</div>
+                <h3 style="color:var(--rosso); margin-bottom:4px;">Mappatura</h3>
+                <p style="font-size:13px; color:var(--grigio);">Trova i centri vicino a te</p>
+            </a>
+            <a href="{% url 'core:link_utili' %}" class="card" style="text-decoration:none; color:inherit; transition:transform 0.2s; display:block;">
+                <div style="font-size:2rem; margin-bottom:8px;">🔗</div>
+                <h3 style="color:var(--rosso); margin-bottom:4px;">Link Utili</h3>
+                <p style="font-size:13px; color:var(--grigio);">Ministeri, Polizia e risorse</p>
+            </a>
+            <a href="{% url 'core:contatti' %}" class="card" style="text-decoration:none; color:inherit; transition:transform 0.2s; display:block;">
+                <div style="font-size:2rem; margin-bottom:8px;">✉️</div>
+                <h3 style="color:var(--rosso); margin-bottom:4px;">Contatti</h3>
+                <p style="font-size:13px; color:var(--grigio);">Scrivici o trovaci</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Numeri utili bar -->
+    <div style="background:var(--grigio-chiaro); border-radius:12px; padding:24px 32px; display:flex; gap:32px; align-items:center; flex-wrap:wrap; justify-content:center; margin-bottom:40px;">
+        <span style="font-weight:700; color:var(--grigio-scuro);">Numeri Utili:</span>
+        <span><strong style="color:var(--rosso); font-size:1.2rem;">1522</strong> – Anti Violenza</span>
+        <span><strong style="color:var(--rosso-scuro); font-size:1.2rem;">112</strong> – Emergenze</span>
+        <span><strong style="color:var(--rosso-scuro); font-size:1.2rem;">113</strong> – Polizia</span>
+        <span><strong style="color:var(--rosso-scuro); font-size:1.2rem;">118</strong> – Soccorso</span>
+    </div>
+</main>
+
+{% endblock %}

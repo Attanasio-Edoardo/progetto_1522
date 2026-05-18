@@ -1,0 +1,397 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}1522 – Numero Anti Violenza e Stalking{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+/* ───────── RESET BASE ───────── */
+
+:root{
+    --rosso:#ff4d6d;
+    --rosso-scuro:#e60039;
+    --grigio:#666;
+    --grigio-scuro:#333;
+    --grigio-chiaro:#f1f1f1;
+    --font-heading:'Poppins', sans-serif;
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+    background:#fdfdfd;
+    color:#333;
+    line-height:1.6;
+}
+
+/* ───────── TOPBAR ───────── */
+.topbar{
+    background:#2b2b2b;
+    color:white;
+    padding:6px 20px;
+    font-size:13px;
+}
+
+.topbar a{
+    text-decoration:none;
+    color: white;
+}
+
+.topbar-inner{
+    max-width:1200px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+}
+
+/* ───────── NAVBAR FULL WIDTH ───────── */
+header{
+    width:100%;
+}
+
+.header-inner{
+    width:100%;
+    padding:0 40px;
+    height:90px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background-color: gray;
+    /* IMMAGINE COMPLETA */
+    
+    
+{% comment %} 
+    background-size:cover;
+    background-position:center; {% endcomment %}
+}
+
+/* LOGO */
+.logo{
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.logo-numero{
+    font-size:44px;
+    font-weight:800;
+    color:#fff;
+}
+
+.logo-testo{
+    font-size:12px;
+    color:#eee;
+    text-transform:uppercase;
+}
+
+/* NAV */
+nav ul{
+    list-style:none;
+    display:flex;
+    gap:25px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:500;
+    padding:8px 12px;
+    border-radius:20px;
+    transition:0.3s;
+}
+
+nav a:hover{
+    background:rgba(255,255,255,0.25);
+}
+
+/* BOTTONE AIUTO */
+.btn-chiedi-aiuto{
+    background:#ff4d6d;
+    font-weight:600;
+}
+
+.btn-chiedi-aiuto:hover{
+    background:#ff1f4b;
+}
+
+/* ───────── HERO COLORATO ───────── */
+.hero{
+    padding:80px 20px;
+    text-align:center;
+    background:linear-gradient(135deg,#ff4d6d,#ff8fa3);
+    color:white;
+        background:
+    linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+    url("{% static 'images/fiori_15.jpg' %}");
+
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+}
+
+.hero h1{
+    font-size:2.8rem;
+    margin-bottom:15px;
+}
+
+.hero-numero{
+    font-size:4.5rem;
+    font-weight:800;
+    margin-top:20px;
+}
+
+/* ───────── MAIN ───────── */
+main{
+    max-width:1100px;
+    margin:60px auto;
+    padding:0 20px;
+}
+
+/* ───────── CARD PIÙ COLORATE ───────── */
+.card{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:30px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.08);
+    border-top:6px solid #ff4d6d;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card-title{
+    font-size:1.4rem;
+    margin-bottom:15px;
+    color:#ff4d6d;
+}
+
+/* ───────── FORM ───────── */
+.form-group{
+    margin-bottom:18px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ddd;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+    outline:none;
+    border-color:#ff4d6d;
+}
+
+/* BOTTONI */
+.btn{
+    padding:10px 20px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#ff4d6d,#ff8fa3);
+}
+
+.btn-primary:hover{
+    background:pink;
+}
+
+/* ───────── FOOTER ───────── */
+footer{
+    background:#1f1f1f;
+    color:white;
+    padding:50px 20px;
+}
+
+.footer-inner{
+    max-width:1100px;
+    margin:auto;
+}
+
+.footer-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr;
+    gap:30px;
+}
+
+.footer-logo{
+    font-size:32px;
+    font-weight:700;
+}
+
+.footer a{
+    color:#ccc;
+    text-decoration:none;
+}
+
+.footer a:hover{
+    color:white;
+}
+
+.footer-bottom{
+    margin-top:30px;
+    font-size:13px;
+    text-align:center;
+    opacity:0.7;
+}
+
+/* ───────── RESPONSIVE ───────── */
+@media(max-width:768px){
+    nav ul{
+        gap:12px;
+    }
+
+    .footer-grid{
+        grid-template-columns:1fr;
+    }
+
+    .hero h1{
+        font-size:2rem;
+    }
+
+    .hero-numero{
+        font-size:3rem;
+    }
+}
+    </style>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <div class="topbar-inner">
+            <!-- Link accesso operatori in alto a sinistra -->
+            <div>
+                <a href="{% url 'operatori:login' %}" class="accesso-operatori">
+                    🔒 Area Operatori
+                </a>
+                {% if user.is_authenticated %}
+                    &nbsp;|&nbsp;
+                    <a href="{% url 'tickets:dashboard' %}">Dashboard</a>
+                    &nbsp;
+                    <a href="{% url 'operatori:logout' %}">Esci ({{ user.username }})</a>
+                {% endif %}
+            </div>
+            <div>
+                🟢 Attivo 24h/24 &nbsp;·&nbsp; Gratuito &nbsp;·&nbsp; Anonimo garantito
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-inner">
+            <a href="{% url 'core:home' %}" class="logo">
+                <span class="logo-numero">1522</span>
+                <span class="logo-testo">Numero Anti Violenza e Stalking</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'core:home' %}">Home</a></li>
+                    <li><a href="{% url 'core:il_1522' %}">Il 1522</a></li>
+                    <li><a href="{% url 'core:mappatura' %}">Mappatura</a></li>
+                    <li><a href="{% url 'core:link_utili' %}">Link Utili</a></li>
+                    <li><a href="{% url 'core:contatti' %}">Contatti</a></li>
+                    <li><a href="{% url 'tickets:invia' %}" class="btn-chiedi-aiuto">Chiedi Aiuto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Messaggi Django -->
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Contenuto pagina -->
+    {% block content %}{% endblock %}
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo" style="color:pink; font-size:32px;">1522</div>
+                    <p style="font-size:14px; line-height:1.7; max-width:360px;">
+                        Servizio pubblico promosso dalla Presidenza del Consiglio dei Ministri –
+                        Dipartimento per le Pari Opportunità. Gratuito, anonimo, attivo H24.
+                    </p>
+                </div>
+                <div>
+                    <h4>Navigazione</h4>
+                    <ul>
+                        <li><a href="{% url 'core:home' %}">Home</a></li>
+                        <li><a href="{% url 'core:il_1522' %}">Il 1522</a></li>
+                        <li><a href="{% url 'core:mappatura' %}">Mappatura</a></li>
+                        <li><a href="{% url 'core:link_utili' %}">Link Utili</a></li>
+                        <li><a href="{% url 'core:contatti' %}">Contatti</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Emergenza</h4>
+                    <ul>
+                        <li><a href="tel:1522"><strong style="color:white;font-size:20px;">1522</strong></a></li>
+                        <li><a href="tel:112">112 – Emergenze</a></li>
+                        <li><a href="tel:118">118 – Soccorso</a></li>
+                        <li><a href="tel:113">113 – Polizia</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © {% now "Y" %} Progetto 1522 – Dipartimento per le Pari Opportunità – Presidenza del Consiglio dei Ministri
+            </div>
+        </div>
+    </footer>
+
+    <!-- Tasto uscita rapida (sicurezza) -->
+    <a href="https://www.google.com" id="uscita-rapida" title="Esci rapidamente da questo sito" target="_self"
+       onclick="window.location.replace('https://www.google.com'); return false;">
+        ✕ Esci Subito
+    </a>
+
+    <script>
+        // Uscita rapida anche con tasto Esc x3
+        let escCount = 0, escTimer;
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                escCount++;
+                clearTimeout(escTimer);
+                escTimer = setTimeout(() => { escCount = 0; }, 1000);
+                if (escCount >= 3) {
+                    window.location.replace('https://www.google.com');
+                }
+            }
+        });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}Ticket #{{ ticket.pk }} – 1522{% endblock %}
+
+{% block content %}
+<main>
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px; padding-top:20px; flex-wrap:wrap;">
+        <a href="{% url 'tickets:dashboard' %}" style="color:var(--rosso); text-decoration:none; font-size:14px;">
+            ← Dashboard
+        </a>
+        <h1 style="font-family:var(--font-heading); font-size:1.8rem;">
+            Ticket #{{ ticket.pk }}
+        </h1>
+        <span class="stato-badge stato-{{ ticket.stato }}">{{ ticket.get_stato_display }}</span>
+        <span class="urgenza-badge urgenza-{{ ticket.livello_urgenza }}">
+            Urgenza {{ ticket.livello_urgenza }}
+        </span>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px; align-items:start;">
+
+        <!-- Colonna sinistra: dettagli + log -->
+        <div>
+            <!-- Dati ticket -->
+            <div class="card">
+                <h2 class="card-title">Dettagli Richiesta</h2>
+                <table style="width:100%; border-collapse:collapse;">
+                    <tr style="border-bottom:1px solid #EEE;">
+                        <td style="padding:10px 0; color:var(--grigio); font-size:13px; width:35%;">Tipo di violenza</td>
+                        <td style="padding:10px 0; font-weight:600;">{{ ticket.get_tipo_violenza_display }}</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #EEE;">
+                        <td style="padding:10px 0; color:var(--grigio); font-size:13px;">Data e ora</td>
+                        <td style="padding:10px 0;">{{ ticket.data_invio|date:"d/m/Y" }} alle {{ ticket.ora_invio|time:"H:i" }}</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #EEE;">
+                        <td style="padding:10px 0; color:var(--grigio); font-size:13px;">Operatore assegnato</td>
+                        <td style="padding:10px 0;">
+                            {{ ticket.operatore_assegnato|default:"—" }}
+                        </td>
+                    </tr>
+                    {% if contatto %}
+                    <tr style="border-bottom:1px solid #EEE;">
+                        <td style="padding:10px 0; color:var(--grigio); font-size:13px;">Contatto (decifrato)</td>
+                        <td style="padding:10px 0; font-weight:600; color:var(--rosso);">{{ contatto }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr style="border-bottom:1px solid #EEE;">
+                        <td style="padding:10px 0; color:var(--grigio); font-size:13px;">Vittima</td>
+                        <td style="padding:10px 0;">
+                            {{ ticket.vittima }}
+                            &nbsp;·&nbsp; {{ ticket.vittima.get_fascia_eta_display }}
+                            &nbsp;·&nbsp; {{ ticket.vittima.get_regione_display }}
+                        </td>
+                    </tr>
+                    {% if ticket.allegato %}
+                    <tr style="border-bottom:1px solid #EEE;">
+                        <td style="padding:10px 0; color:var(--grigio); font-size:13px;">Allegato</td>
+                        <td style="padding:10px 0;">
+                            <a href="{{ ticket.allegato.url }}" target="_blank" style="color:var(--rosso);">
+                                📎 Visualizza allegato
+                            </a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </table>
+                <div style="margin-top:16px;">
+                    <p style="font-size:13px; color:var(--grigio); margin-bottom:4px; font-weight:600;">Descrizione:</p>
+                    <div style="background:var(--grigio-chiaro); border-radius:8px; padding:14px; font-size:14px; line-height:1.7;">
+                        {{ ticket.descrizione }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Log azioni -->
+            <div class="card">
+                <h2 class="card-title">Storico Azioni</h2>
+                {% if log_list %}
+                    {% for log in log_list %}
+                    <div style="border-left:3px solid var(--rosso); padding:10px 14px; margin-bottom:12px; background:var(--grigio-chiaro); border-radius:0 8px 8px 0;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                            <strong style="font-size:14px;">{{ log.get_azione_display }}</strong>
+                            <span style="font-size:12px; color:var(--grigio);">
+                                {{ log.eseguita_il|date:"d/m/Y H:i" }} · {{ log.operatore.get_full_name|default:log.operatore.username }}
+                            </span>
+                        </div>
+                        {% if log.esito %}
+                            <p style="font-size:13px; margin-top:4px; color:var(--grigio-scuro);">{{ log.esito }}</p>
+                        {% endif %}
+                        {% if log.note_riservate %}
+                            <p style="font-size:12px; margin-top:6px; color:var(--grigio); font-style:italic; background:white; padding:8px; border-radius:4px;">
+                                🔒 {{ log.note_riservate }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color:var(--grigio); font-size:14px;">Nessuna azione registrata.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Colonna destra: azioni operatore -->
+        <div>
+            <!-- Pulsanti rapidi -->
+            <div class="card">
+                <h2 class="card-title">Azioni Rapide</h2>
+
+                {% if ticket.stato == 'APERTA' %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="azione_form" value="prendi_in_carico">
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-bottom:10px;">
+                        ✋ Prendi in Carico
+                    </button>
+                </form>
+                {% endif %}
+
+                {% if ticket.stato == 'IN_CARICO' and ticket.operatore_assegnato == request.user %}
+                <a href="{% url 'chat:room' ticket.pk %}" class="btn btn-success btn-block" style="margin-bottom:10px;">
+                    💬 Apri Chat con la Vittima
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Cambio stato -->
+            <div class="card">
+                <h2 class="card-title">Cambia Stato</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="azione_form" value="cambia_stato">
+                    <div class="form-group">
+                        {{ form_stato.stato }}
+                    </div>
+                    <button type="submit" class="btn btn-secondary btn-block btn-sm">
+                        Aggiorna Stato
+                    </button>
+                </form>
+            </div>
+
+            <!-- Aggiungi log -->
+            <div class="card">
+                <h2 class="card-title">Aggiungi Nota</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="azione_form" value="aggiungi_log">
+                    <div class="form-group">
+                        <label>Azione</label>
+                        {{ form_log.azione }}
+                    </div>
+                    <div class="form-group">
+                        <label>Esito</label>
+                        {{ form_log.esito }}
+                    </div>
+                    <div class="form-group">
+                        <label>Note riservate</label>
+                        {{ form_log.note_riservate }}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-sm">
+                        Salva Nota
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+.form-group input, .form-group select, .form-group textarea {
+    font-size: 14px;
+    padding: 8px 12px;
+}
+</style>
+{% endblock %}

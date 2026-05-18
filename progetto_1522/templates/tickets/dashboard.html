@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Operatori – 1522{% endblock %}
+
+{% block content %}
+<main>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; padding-top:20px;">
+        <div>
+            <h1 style="font-family:var(--font-heading); font-size:2rem;">Dashboard Operatori</h1>
+            <p style="color:var(--grigio);">Benvenuto, <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                — {{ request.user.get_specializzazione_display }}</p>
+        </div>
+        <a href="{% url 'operatori:logout' %}" class="btn btn-secondary btn-sm">Logout</a>
+    </div>
+
+    <!-- Statistiche rapide -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-bottom:32px;">
+        <div class="card" style="border-top:4px solid var(--rosso); text-align:center; padding:20px;">
+            <div style="font-size:2.5rem; font-weight:700; color:var(--rosso);">{{ tickets_aperti.count }}</div>
+            <div style="font-size:13px; color:var(--grigio); margin-top:4px;">Ticket Aperti</div>
+        </div>
+        <div class="card" style="border-top:4px solid #1976D2; text-align:center; padding:20px;">
+            <div style="font-size:2.5rem; font-weight:700; color:#1976D2;">{{ tickets_in_carico.count }}</div>
+            <div style="font-size:13px; color:var(--grigio); margin-top:4px;">In Carico (miei)</div>
+        </div>
+        <div class="card" style="border-top:4px solid var(--verde-ok); text-align:center; padding:20px;">
+            <div style="font-size:2.5rem; font-weight:700; color:var(--verde-ok);">{{ tickets_recenti.count }}</div>
+            <div style="font-size:13px; color:var(--grigio); margin-top:4px;">Chiusi Recenti</div>
+        </div>
+        {% if request.user.is_superuser %}
+        <div class="card" style="border-top:4px solid var(--oro); text-align:center; padding:20px;">
+            <a href="{% url 'operatori:admin_registrazioni' %}" style="text-decoration:none; color:inherit;">
+                <div style="font-size:2rem; margin-bottom:4px;">👥</div>
+                <div style="font-size:13px; color:var(--grigio);">Gestione Operatori</div>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Ticket urgenti (priorità) -->
+    {% with urgenti=tickets_aperti|slice:":3" %}
+    {% for t in tickets_aperti %}
+        {% if t.livello_urgenza >= 3 %}
+        <div style="background:#FFEBEE; border:2px solid var(--rosso); border-radius:10px; padding:14px 20px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+            <div>
+                <span class="urgenza-badge urgenza-{{ t.livello_urgenza }}" style="margin-right:8px;">
+                    ⚠️ URGENTE
+                </span>
+                <strong>Ticket #{{ t.pk }}</strong> – {{ t.get_tipo_violenza_display }}
+                <span style="color:var(--grigio); font-size:13px; margin-left:8px;">
+                    {{ t.creato_il|timesince }} fa
+                </span>
+            </div>
+            <a href="{% url 'tickets:dettaglio' t.pk %}" class="btn btn-primary btn-sm">
+                Gestisci subito
+            </a>
+        </div>
+        {% endif %}
+    {% endfor %}
+    {% endwith %}
+
+    <!-- Ticket aperti -->
+    <div class="card">
+        <h2 class="card-title">Ticket Aperti</h2>
+        {% if tickets_aperti %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tipo Violenza</th>
+                        <th>Urgenza</th>
+                        <th>Regione</th>
+                        <th>Data</th>
+                        <th>Stato</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets_aperti %}
+                    <tr>
+                        <td><strong>{{ ticket.pk }}</strong></td>
+                        <td>{{ ticket.get_tipo_violenza_display }}</td>
+                        <td>
+                            <span class="urgenza-badge urgenza-{{ ticket.livello_urgenza }}">
+                                {{ ticket.livello_urgenza }} – {{ ticket.get_livello_urgenza_display|slice:":15" }}…
+                            </span>
+                        </td>
+                        <td>{{ ticket.vittima.get_regione_display }}</td>
+                        <td style="font-size:13px; color:var(--grigio);">{{ ticket.creato_il|date:"d/m/Y H:i" }}</td>
+                        <td><span class="stato-badge stato-{{ ticket.stato }}">{{ ticket.get_stato_display }}</span></td>
+                        <td>
+                            <a href="{% url 'tickets:dettaglio' ticket.pk %}" class="btn btn-primary btn-sm">
+                                Apri
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p style="color:var(--grigio); text-align:center; padding:24px;">
+                ✅ Nessun ticket aperto al momento.
+            </p>
+        {% endif %}
+    </div>
+
+    <!-- Miei ticket in carico -->
+    {% if tickets_in_carico %}
+    <div class="card">
+        <h2 class="card-title">I Miei Ticket in Carico</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr><th>#</th><th>Tipo</th><th>Urgenza</th><th>Data</th><th>Azioni</th></tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets_in_carico %}
+                    <tr>
+                        <td><strong>{{ ticket.pk }}</strong></td>
+                        <td>{{ ticket.get_tipo_violenza_display }}</td>
+                        <td><span class="urgenza-badge urgenza-{{ ticket.livello_urgenza }}">{{ ticket.livello_urgenza }}</span></td>
+                        <td style="font-size:13px;">{{ ticket.creato_il|date:"d/m/Y H:i" }}</td>
+                        <td style="display:flex; gap:8px;">
+                            <a href="{% url 'tickets:dettaglio' ticket.pk %}" class="btn btn-secondary btn-sm">Dettaglio</a>
+                            <a href="{% url 'chat:room' ticket.pk %}" class="btn btn-primary btn-sm">💬 Chat</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}

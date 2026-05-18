@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Mappatura Sedi 1522{% endblock %}
+
+{% block extra_head %}
+<!-- Leaflet.js per la mappa (CDN, nessuna API key necessaria) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+    #mappa { height: 500px; border-radius: 12px; overflow: hidden; }
+    .leaflet-popup-content { font-family: var(--font-body); font-size: 14px; }
+    .leaflet-popup-content strong { color: var(--rosso); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="background:var(--rosso); color:white; padding:48px 24px; text-align:center;">
+    <h1 style="font-family:var(--font-heading); font-size:2.5rem; margin-bottom:12px;">Mappatura 1522</h1>
+    <p style="opacity:0.9; max-width:500px; margin:0 auto;">
+        Trova le sedi del servizio 1522 sul territorio nazionale
+    </p>
+</div>
+
+<main>
+    <div style="display:grid; grid-template-columns:1fr 2fr; gap:24px; align-items:start;">
+
+        <!-- Lista sedi -->
+        <div>
+            <div class="card">
+                <h2 class="card-title">Sedi sul Territorio</h2>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    {% for sede in sedi %}
+                    <div class="sede-item" data-lat="{{ sede.lat }}" data-lng="{{ sede.lng }}" data-citta="{{ sede.citta }}"
+                         style="padding:10px 12px; border-radius:8px; cursor:pointer; transition:background 0.2s; border:1px solid transparent;"
+                         onmouseover="this.style.background='var(--rosso-chiaro)'; this.style.borderColor='var(--rosso)'; evidenziaSede({{ forloop.counter0 }})"
+                         onmouseout="this.style.background=''; this.style.borderColor='transparent'">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span style="color:var(--rosso);">📍</span>
+                            <div>
+                                <strong style="font-size:14px;">{{ sede.citta }}</strong>
+                                <div style="font-size:12px; color:var(--grigio);">{{ sede.indirizzo }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Mappa -->
+        <div>
+            <div id="mappa"></div>
+            <p style="font-size:12px; color:var(--grigio); margin-top:8px; text-align:center;">
+                Dati a scopo illustrativo. Per la mappatura ufficiale visita <a href="https://www.1522.eu/mappatura-1522/" target="_blank" style="color:var(--rosso);">1522.eu</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+{% block extra_scripts %}
+<script>
+    // Dati sedi dal backend Django
+    const sedi = [
+        {% for sede in sedi %}
+        {
+            citta: "{{ sede.citta }}",
+            lat: {{ sede.lat }},
+            lng: {{ sede.lng }},
+            indirizzo: "{{ sede.indirizzo }}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    // Inizializza mappa Leaflet centrata sull'Italia
+    const mappa = L.map('mappa').setView([42.5, 12.5], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mappa);
+
+    // Icona personalizzata rossa
+    const iconaRossa = L.divIcon({
+        html: '<div style="background:#C8102E; width:14px; height:14px; border-radius:50%; border:3px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>',
+        className: '',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7],
+        popupAnchor: [0, -10]
+    });
+
+    const markers = [];
+
+    sedi.forEach(function(sede, i) {
+        const marker = L.marker([sede.lat, sede.lng], { icon: iconaRossa })
+            .addTo(mappa)
+            .bindPopup(`<strong>Sede 1522 – ${sede.citta}</strong><br>${sede.indirizzo}<br><a href="tel:1522" style="color:#C8102E;">📞 1522</a>`);
+        markers.push(marker);
+    });
+
+    function evidenziaSede(index) {
+        markers[index].openPopup();
+        mappa.setView([sedi[index].lat, sedi[index].lng], 10);
+    }
+</script>
+{% endblock %}
+{% endblock %}

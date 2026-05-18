@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Accesso Operatori – 1522{% endblock %}
+
+{% block content %}
+<main style="max-width:480px; padding-top:40px;">
+
+    <div style="text-align:center; margin-bottom:32px;">
+        <div style="font-size:3rem; margin-bottom:12px;">🔒</div>
+        <h1 style="font-family:var(--font-heading); font-size:2rem;">Area Operatori</h1>
+        <p style="color:var(--grigio);">Accedi con le tue credenziali 1522</p>
+    </div>
+
+    <!-- Tab login / registrazione -->
+    <div style="display:flex; border-bottom:2px solid #EEE; margin-bottom:28px;">
+        <a href="{% url 'operatori:login' %}" style="text-decoration:none; padding:10px 24px; font-weight:700; color:var(--rosso); border-bottom:3px solid var(--rosso); margin-bottom:-2px; font-size:14px;">
+            Accesso
+        </a>
+        <a href="{% url 'operatori:registrazione' %}" style="text-decoration:none; padding:10px 24px; font-weight:600; color:var(--grigio); font-size:14px;">
+            Richiedi Registrazione
+        </a>
+    </div>
+
+    <div class="card">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username, Email o Telefono</label>
+                {{ form.identificativo }}
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" style="font-size:15px; padding:13px;">
+                Accedi
+            </button>
+        </form>
+    </div>
+
+    <div style="text-align:center; margin-top:20px;">
+        <a href="{% url 'operatori:registrazione' %}" style="color:var(--rosso); font-size:14px; text-decoration:none;">
+            Non hai ancora un account? Richiedi la registrazione →
+        </a>
+    </div>
+
+    {% if request.user.is_superuser %}
+    <div style="margin-top:24px; padding:16px; background:var(--rosso-chiaro); border-radius:10px; text-align:center;">
+        <p style="font-size:13px; color:var(--grigio-scuro); margin-bottom:8px;">
+            Sei loggato come <strong>Admin</strong>
+        </p>
+        <a href="{% url 'operatori:admin_registrazioni' %}" class="btn btn-primary btn-sm">
+            Gestione Registrazioni
+        </a>
+    </div>
+    {% endif %}
+</main>
+{% endblock %}
